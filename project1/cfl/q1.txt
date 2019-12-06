@@ -1,0 +1,8 @@
+2
+S->aSb
+S->!
+aabb
+!
+aaaabbbb
+ababa
+bbaaa
