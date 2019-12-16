@@ -1,6 +1,3 @@
-import sys
-
-sys.setrecursionlimit(10000000)
 class TM:
     def __init__(self, file_in):
         self.transitions, self.initial_tape, self.final_state = self._read_file(file_in)
@@ -20,7 +17,6 @@ class TM:
         print("".join(i for i in self.final_tape))
 
     def propagate_machine(self, current_state, tape, tape_head_index):
-        loop_till_now = 0
         while True:
             if current_state == self.final_state:
                 return tape
@@ -80,7 +76,7 @@ class TM:
         return transition_details, initial_tape_content, final_state
 
 
-if __name__ == "__main__":
-    tm = TM(file_in="BB2.txt")
-    tm.start_machine()
-    tm.display_tape()
+# if __name__ == "__main__":
+#     tm = TM(file_in="BB2.txt")
+#     tm.start_machine()
+#     tm.display_tape()
