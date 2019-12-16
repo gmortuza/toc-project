@@ -1,3 +1,6 @@
+import sys
+
+sys.setrecursionlimit(10000000)
 class TM:
     def __init__(self, file_in):
         self.transitions, self.initial_tape, self.final_state = self._read_file(file_in)
@@ -17,31 +20,33 @@ class TM:
         print("".join(i for i in self.final_tape))
 
     def propagate_machine(self, current_state, tape, tape_head_index):
-        if current_state == self.final_state:
-            return tape
-        symbol = tape[tape_head_index]
-        # get the transition for this current state and symbol
-        transition = self.transitions[current_state][symbol]
-        # Write in the tape
-        tape[tape_head_index] = transition["write_symbol"]
-        # Move tape head
-        # if tape head is zero and we need to go left. Then we need to insert another zero at the beginning.
-        # And keep the tape_head_index as 0
-        if tape_head_index == 0 and transition["move"] == 'L':
-            # Don't need to change the head position. It will still be 0
-            tape.insert(0, '0')
-        elif tape_head_index == len(tape) - 1 and transition["move"] == "R":
-            tape.append('0')
-            tape_head_index += 1
-        elif transition["move"] == "R":
-            tape_head_index += 1
-        elif transition["move"] == "L":
-            tape_head_index -= 1
+        loop_till_now = 0
+        while True:
+            if current_state == self.final_state:
+                return tape
+            symbol = tape[tape_head_index]
+            # get the transition for this current state and symbol
+            transition = self.transitions[current_state][symbol]
+            # Write in the tape
+            tape[tape_head_index] = transition["write_symbol"]
+            # Move tape head
+            # if tape head is zero and we need to go left. Then we need to insert another zero at the beginning.
+            # And keep the tape_head_index as 0
+            if tape_head_index == 0 and transition["move"] == 'L':
+                # Don't need to change the head position. It will still be 0
+                tape.insert(0, '0')
+            elif tape_head_index == len(tape) - 1 and transition["move"] == "R":
+                tape.append('0')
+                tape_head_index += 1
+            elif transition["move"] == "R":
+                tape_head_index += 1
+            elif transition["move"] == "L":
+                tape_head_index -= 1
 
-        return self.propagate_machine(current_state=transition["next_state"], tape=tape,
-                                      tape_head_index=tape_head_index)
+            current_state = transition["next_state"]
 
-    def _read_file(self, file_in):
+    @staticmethod
+    def _read_file(file_in):
         # Make every thing string so that we don't need to conver back and forth
         with open(file_in, "r") as file:
             file_data = file.readlines()
@@ -76,6 +81,6 @@ class TM:
 
 
 if __name__ == "__main__":
-    tm = TM(file_in="BB31101.txt")
+    tm = TM(file_in="BB2.txt")
     tm.start_machine()
     tm.display_tape()
